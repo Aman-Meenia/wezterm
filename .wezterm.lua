@@ -4,22 +4,22 @@ local wezterm = require("wezterm")
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
--- Define the tmux session name
-local tmux_session_name = "Aman"
+-- TMUX SETUP
 
--- Define the command to start or attach to the tmux session
+local tmux_session_name = "Aman"
 local tmux_command = {
 	"/bin/bash",
 	"-c",
 	string.format(
 		[[
-    if tmux has-session -t %s 2>/dev/null; then
-      tmux attach-session -t %s
-    else
-      tmux new-session -s %s
-    fi
-    exec $SHELL
-  ]],
+        export PATH="/usr/local/bin:$PATH";
+        if tmux has-session -t %s 2>/dev/null; then
+          tmux attach-session -t %s
+        else
+          tmux new-session -s %s
+        fi
+        exec $SHELL
+        ]],
 		tmux_session_name,
 		tmux_session_name,
 		tmux_session_name
