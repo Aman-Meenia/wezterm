@@ -4,54 +4,6 @@ local wezterm = require("wezterm")
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
--- TMUX SETUP
-
-local tmux_session_name = "Aman"
-local tmux_command = {
-	"/bin/bash",
-	"-c",
-	string.format(
-		[[
-        export PATH="/usr/local/bin:$PATH";
-        if tmux has-session -t %s 2>/dev/null; then
-          tmux attach-session -t %s
-        else
-          tmux new-session -s %s
-        fi
-        exec $SHELL
-        ]],
-		tmux_session_name,
-		tmux_session_name,
-		tmux_session_name
-	),
-}
-config.default_prog = tmux_command
-
---  Appearance
-
--- config.color_scheme = "Catppuccin Frappe"
--- For example, changing the color scheme:
--- config.color_scheme = "Dracula"
--- config.color_scheme = "Dracula (Official)"
--- config.color_scheme = "Catppuccin Macchiato"
--- config.color_scheme = "termnial.sexy"
--- config.color_scheme = "Cobalt 2 (Gogh)"
--- config.color_scheme = "Catppuccin Mocha" --Mocha  , Macchiato, Frappe, Latte
--- config.color_schemes = custom
--- color_scheme = "OLEDppuccin",
-
--- config.colors = {
--- 	foreground = "#CBE0F0",
--- 	background = "#011423",
--- 	cursor_bg = "#47FF9C",
--- 	cursor_border = "#47FF9C",
--- 	cursor_fg = "#011423",
--- 	selection_bg = "#706b4e",
--- 	selection_fg = "#f3d9c4",
--- 	ansi = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#0FC5ED", "#a277ff", "#24EAF7", "#24EAF7" },
--- 	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#24EAF7" },
--- }
---
 -- Appearance
 config.colors = {
 	foreground = "#CDD6F4",
@@ -111,42 +63,15 @@ config.colors = {
 		},
 	},
 }
-
 -- Set window padding
 config.window_padding = {
-	-- 	left = 20,
+	left = 20,
 	right = 20,
 	top = 10,
 	bottom = 10,
 }
 
--- // Border color
--- config.window_frame = {
--- 	border_left_width = "0.5cell",
--- 	border_right_width = "0.5cell",
--- 	border_bottom_height = "0.25cell",
--- 	border_top_height = "0.25cell",
--- 	border_left_color = "purple",
--- 	border_right_color = "purple",
--- 	border_bottom_color = "purple",
--- 	border_top_color = "purple",
--- }
-
-config.font = wezterm.font("MesloLGS Nerd Font Mono")
--- config.font = wezterm.font("JetBrains Mono", {})
-config.font_size = 19
-config.hyperlink_rules = wezterm.default_hyperlink_rules()
-config.hyperlink_rules = wezterm.default_hyperlink_rules()
-
--- config.enable_tab_bar = false
--- config.tab_bar_at_bottom = true
-config.window_decorations = "RESIZE"
-
--- MAKE TERMINAL TRANSPARENT
--- config.window_background_opacity = 0.75
--- config.macos_window_background_blur = 25
-
-config.hide_mouse_cursor_when_typing = true
+-- config.hide_mouse_cursor_when_typing = true
 
 -- Key bindings for moving between tabs
 config.keys = {
@@ -160,14 +85,12 @@ config.keys = {
 config.initial_rows = 32
 config.initial_cols = 117
 
-config.color_scheme = "Catppuccin Mocha"
-
 -- to enable the tab bar
-config.enable_tab_bar = true --  true or false
+config.enable_tab_bar = false --  true or false
 
--- top bar config
+-- tab bar config
 wezterm.plugin.require("https://github.com/nekowinston/wezterm-bar").apply_to_config(config, {
-	position = "top",
+	position = "top", -- "top" or "bottom
 	max_width = 32,
 	dividers = "slant_right", -- "slant_right" or "slant_left", "arrows", "rounded", false
 	indicator = {
@@ -198,5 +121,51 @@ wezterm.plugin.require("https://github.com/nekowinston/wezterm-bar").apply_to_co
 		-- format = "%H:%M:%S", -- use https://wezfurlong.org/wezterm/config/lua/wezterm.time/Time/format.html
 	},
 })
--- -- and finally, return the configuration to wezterm
+
+-- Tmux setup
+local tmux_session_name = "Aman"
+local tmux_command = {
+	"/bin/bash",
+	"-c",
+	string.format(
+		[[
+        export PATH="/usr/local/bin:$PATH";
+        if tmux has-session -t %s 2>/dev/null; then
+          tmux attach-session -t %s
+        else
+          tmux new-session -s %s
+        fi
+        exec $SHELL
+        ]],
+		tmux_session_name,
+		tmux_session_name,
+		tmux_session_name
+	),
+}
+config.default_prog = tmux_command
+
+-- font
+
+-- config.font = wezterm.font("MesloLGS Nerd Font Mono")
+-- -- or
+-- config.font = wezterm.font("JetBrains Mono", {})
+
+config.font = wezterm.font_with_fallback({
+	"JetBrains Mono",
+	{
+		family = "Symbols Nerd Font Mono",
+		scale = 0.75,
+	},
+})
+
+-- font size
+config.font_size = 19
+
+-- Make apple tab bar hidden
+config.window_decorations = "RESIZE"
+
+-- MAKE TERMINAL TRANSPARENT
+-- config.window_background_opacity = 0.9
+-- config.macos_window_background_blur = 90
+
 return config
